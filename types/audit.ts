@@ -1,3 +1,5 @@
+// types/audit.ts
+
 // Page Status
 export interface PageStatus {
     status: number;
