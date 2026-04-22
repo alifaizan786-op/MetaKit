@@ -6,7 +6,7 @@ export interface PageStatus {
     statusText: string;
 }
 
-// OG
+// Open Graph
 export interface OG{
     title?: string;
     description?: string;
