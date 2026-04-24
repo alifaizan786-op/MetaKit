@@ -1,7 +1,10 @@
 // lib/metaParser.ts
 import * as cheerio from 'cheerio';
+import { AuditResult, Warning } from '@/types/audit';
 
-export async function parseMetaTags(url: String | null) {
+export async function parseMetaTags(url: string | null): Promise<AuditResult> {
+	if (!url) throw new Error('URL is required');
+
 	const fetchUrl = await fetch(url);
 	const html = await fetchUrl.text();
 	const $ = cheerio.load(html);
@@ -10,8 +13,6 @@ export async function parseMetaTags(url: String | null) {
 		$('link[rel="shortcut icon"]').attr('href') ||
 		$('link[rel="apple-touch-icon"]').attr('href') ||
 		'/favicon.ico'; // default fallback — almost every site has this
-
-console.log($('head').html());
 
 	const auditResult = {
 		id: '',
@@ -57,7 +58,7 @@ console.log($('head').html());
 	return { ...auditResult, warnings };
 }
 
-function generateWarnings(metaObj = Object) {
+function generateWarnings(metaObj: AuditResult): Warning[] {
 	const validUrl = /^https?:\/\/.+\..+/;
 	const parameters = [
 		{
@@ -227,8 +228,6 @@ function generateWarnings(metaObj = Object) {
 		},
 	];
 	let warnings = [];
-
-	console.log(warnings);
 
 	for (let i = 0; i < parameters.length; i++) {
 		const element = parameters[i];
