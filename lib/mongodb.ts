@@ -8,15 +8,16 @@ const MONGODB_URI = process.env.MONGODB_URI!;
 global.mongoose = global.mongoose || { conn: null, promise: null };
 let cached = global.mongoose;
 
+
 async function connectDB() {
-  if (cached.conn) return cached.conn;
+	if (cached.conn) return cached.conn;
 
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI);
-  }
+	if (!cached.promise) {
+		cached.promise = mongoose.connect(MONGODB_URI);
+	}
 
-  cached.conn = await cached.promise;
-  return cached.conn;
+	cached.conn = await cached.promise;
+	return cached.conn;
 }
 
 export default connectDB;
