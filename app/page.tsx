@@ -1,7 +1,596 @@
+'use client';
+// app/page.tsx
+// The main MetaKit auditor page.
+// User pastes a URL → hits Audit → sees meta tag results + social card previews side by side.
+// State machine: idle → loading → results | error
+
+import FacebookPreview from '@/components/previews/FacebookPreview';
+import LinkedInPreview from '@/components/previews/LinkedInPreview';
+import SlackPreview from '@/components/previews/SlackPreview';
+import TwitterPreview from '@/components/previews/TwitterPreview';
+import ThemeToggle from '@/components/ThemeToggle';
+import WarningsList from '@/components/WarningsList';
+import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
+import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
+import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import {
+	Alert,
+	AppBar,
+	Box,
+	Button,
+	Chip,
+	CircularProgress,
+	Container,
+	Divider,
+	Grid,
+	Link,
+	Paper,
+	TextField,
+	Toolbar,
+	Tooltip,
+	Typography,
+} from '@mui/material';
+import { useState } from 'react';
+
+// Shape of the API response
+interface AuditResponse {
+	data: {
+		url: string;
+		pageStatus: { status: number; statusText: string };
+		auditedAt: string;
+		cached: boolean;
+		warnings: Array<{
+			message: string;
+			severity: 'error' | 'warning' | 'info';
+		}>;
+		meta: {
+			title?: string;
+			description?: string;
+			canonical?: string;
+			favicon?: string;
+			og: { title?: string; description?: string; image?: string };
+			twitter: { title?: string; description?: string; image?: string };
+		};
+	};
+	remaining: number;
+	limit: number;
+	reset: string;
+	error?: string;
+}
+
 export default function Home() {
-  return (
-    <main>
-      <h1>MetaKit</h1>
-    </main>
-  );
+	const [url, setUrl] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [result, setResult] = useState<AuditResponse | null>(null);
+	const [error, setError] = useState<string | null>(null);
+	const [copied, setCopied] = useState(false);
+
+	// Run the audit — calls our own API route
+	const runAudit = async (forceRefresh = false) => {
+		if (!url.trim()) return;
+
+		setLoading(true);
+		setError(null);
+		setResult(null);
+
+		try {
+			const params = new URLSearchParams({ url: url.trim() });
+			if (forceRefresh) params.set('refresh', 'true');
+
+			const res = await fetch(`/api/audit?${params.toString()}`);
+			const json: AuditResponse = await res.json();
+
+			if (!res.ok || json.error) {
+				setError(json.error || 'Something went wrong');
+			} else {
+				setResult(json);
+			}
+		} catch (e) {
+			setError('Network error — could not reach the audit API');
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Copy the shareable API link to clipboard
+	const copyApiLink = () => {
+		const apiUrl = `${window.location.origin}/api/audit?url=${encodeURIComponent(url)}`;
+		navigator.clipboard.writeText(apiUrl);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	};
+
+	const meta = result?.data?.meta;
+
+	return (
+		<Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+			{/* ── Navigation bar ── */}
+			<AppBar
+				position='sticky'
+				elevation={0}
+				sx={{
+					borderBottom: '1px solid',
+					borderColor: 'divider',
+					backgroundColor: 'background.paper',
+				}}>
+				<Toolbar sx={{ gap: 2 }}>
+					{/* Logo */}
+					<Typography
+						variant='h6'
+						sx={{
+							fontFamily: '"Space Grotesk", sans-serif',
+							fontWeight: 700,
+							color: 'primary.main',
+							letterSpacing: '-0.02em',
+							flex: 1,
+						}}>
+						Meta
+						<Box component='span' sx={{ color: 'text.primary' }}>
+							Kit
+						</Box>
+					</Typography>
+
+					{/* Nav links — Box flex avoids passing layout props to DOM anchor tags */}
+					<Link
+						href='/history'
+						underline='none'
+						color='text.secondary'
+						sx={{
+							fontSize: '0.9rem',
+							display: 'flex',
+							alignItems: 'center',
+							gap: 0.5,
+						}}>
+						<HistoryRoundedIcon fontSize='small' />
+						History
+					</Link>
+
+					<Link
+						href='/docs'
+						underline='none'
+						color='text.secondary'
+						sx={{
+							fontSize: '0.9rem',
+							display: 'flex',
+							alignItems: 'center',
+							gap: 0.5,
+						}}>
+						<MenuBookRoundedIcon fontSize='small' />
+						API Docs
+					</Link>
+
+					<ThemeToggle />
+				</Toolbar>
+			</AppBar>
+
+			{/* ── Hero / input section ── */}
+			<Box
+				sx={{
+					py: { xs: 6, md: 10 },
+					px: 2,
+					textAlign: 'center',
+					backgroundImage: (theme) =>
+						theme.palette.mode === 'dark'
+							? 'radial-gradient(ellipse at 50% 0%, rgba(0,229,160,0.06) 0%, transparent 70%)'
+							: 'radial-gradient(ellipse at 50% 0%, rgba(0,163,114,0.07) 0%, transparent 70%)',
+				}}>
+				<Container maxWidth='md'>
+					<Chip
+						label='Free Developer Tool'
+						size='small'
+						color='primary'
+						variant='outlined'
+						sx={{
+							mb: 2,
+							fontFamily: '"JetBrains Mono", monospace',
+							fontSize: '0.7rem',
+						}}
+					/>
+
+					<Typography
+						variant='h1'
+						sx={{ fontSize: { xs: '2rem', md: '3rem' }, mb: 1.5 }}>
+						Audit your meta tags{' '}
+						<Box component='span' sx={{ color: 'primary.main' }}>
+							instantly
+						</Box>
+					</Typography>
+
+					<Typography
+						color='text.secondary'
+						sx={{ mb: 4, maxWidth: 540, mx: 'auto', fontSize: '1.05rem' }}>
+						Paste any URL and see exactly how it renders on Facebook, Twitter,
+						LinkedIn, and Slack. Plus a full meta tag report with actionable
+						warnings.
+					</Typography>
+
+					{/* ── URL Input row ── */}
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: { xs: 'column', sm: 'row' },
+							gap: 1.5,
+							alignItems: 'stretch',
+						}}>
+						<TextField
+							fullWidth
+							placeholder='https://yoursite.com'
+							value={url}
+							onChange={(e) => setUrl(e.target.value)}
+							onKeyDown={(e) => e.key === 'Enter' && runAudit()}
+							slotProps={{
+								input: {
+									startAdornment: (
+										<LinkRoundedIcon
+											sx={{ mr: 1, color: 'text.secondary' }}
+											fontSize='small'
+										/>
+									),
+									sx: {
+										fontFamily: '"JetBrains Mono", monospace',
+										fontSize: '0.9rem',
+									},
+								},
+							}}
+							sx={{ flex: 1 }}
+						/>
+						<Button
+							variant='contained'
+							size='large'
+							onClick={() => runAudit()}
+							disabled={loading || !url.trim()}
+							startIcon={
+								loading ? (
+									<CircularProgress size={16} color='inherit' />
+								) : (
+									<SearchRoundedIcon />
+								)
+							}
+							sx={{ px: 4, whiteSpace: 'nowrap', minWidth: 140 }}>
+							{loading ? 'Auditing...' : 'Audit'}
+						</Button>
+					</Box>
+
+					{/* Example URL shortcuts */}
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'row',
+							gap: 1,
+							justifyContent: 'center',
+							mt: 2,
+							flexWrap: 'wrap',
+							alignItems: 'center',
+						}}>
+						<Typography variant='body2' color='text.secondary'>
+							Try:
+						</Typography>
+						{[
+							'https://github.com',
+							'https://vercel.com',
+							'https://stripe.com',
+						].map((example) => (
+							<Typography
+								key={example}
+								variant='body2'
+								color='primary.main'
+								sx={{
+									cursor: 'pointer',
+									'&:hover': { textDecoration: 'underline' },
+								}}
+								onClick={() => setUrl(example)}>
+								{example.replace('https://', '')}
+							</Typography>
+						))}
+					</Box>
+				</Container>
+			</Box>
+
+			{/* ── Error state ── */}
+			{error && (
+				<Container maxWidth='md' sx={{ mt: 3 }}>
+					<Alert severity='error'>{error}</Alert>
+				</Container>
+			)}
+
+			{/* ── Results section ── */}
+			{result && meta && (
+				<Container maxWidth='xl' sx={{ py: 4, flex: 1 }}>
+					{/* Result header bar */}
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: { xs: 'column', sm: 'row' },
+							justifyContent: 'space-between',
+							alignItems: { xs: 'flex-start', sm: 'center' },
+							mb: 3,
+							gap: 1,
+						}}>
+						{/* Left: status chips + timestamp */}
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'center',
+								gap: 1,
+								flexWrap: 'wrap',
+							}}>
+							<Chip
+								label={`${result.data.pageStatus.status} ${result.data.pageStatus.statusText}`}
+								color={
+									result.data.pageStatus.status === 200 ? 'success' : 'error'
+								}
+								size='small'
+							/>
+							<Chip
+								label={result.data.cached ? 'Cached' : 'Live'}
+								variant='outlined'
+								size='small'
+								color={result.data.cached ? 'info' : 'default'}
+							/>
+							<Typography variant='caption' color='text.secondary'>
+								Audited {new Date(result.data.auditedAt).toLocaleTimeString()}
+							</Typography>
+						</Box>
+
+						{/* Right: action buttons */}
+						<Box sx={{ display: 'flex', gap: 1 }}>
+							<Button
+								size='small'
+								variant='outlined'
+								startIcon={<RefreshRoundedIcon />}
+								onClick={() => runAudit(true)}>
+								Refresh
+							</Button>
+							<Tooltip title={copied ? 'Copied!' : 'Copy API link'}>
+								<Button
+									size='small'
+									variant='outlined'
+									startIcon={<ContentCopyRoundedIcon />}
+									onClick={copyApiLink}
+									color={copied ? 'success' : 'inherit'}>
+									{copied ? 'Copied' : 'Share'}
+								</Button>
+							</Tooltip>
+						</Box>
+					</Box>
+
+					<Grid container spacing={3}>
+						
+						{/* ── Warnings — full width ── */}
+						<Grid size={{ xs: 12 }}>
+							<Paper sx={{ p: 2.5 }} variant='outlined'>
+								<Typography variant='h6' sx={{ fontWeight: 700, mb: 1 }}>
+									Issues
+								</Typography>
+								<WarningsList warnings={result.data.warnings} />
+							</Paper>
+						</Grid>
+
+						{/* ── Left: Meta Tags — 50% ── */}
+						<Grid size={{ xs: 12, md: 6 }}>
+							<Paper sx={{ p: 2.5 }} variant='outlined'>
+								<Typography variant='h6' sx={{ fontWeight: 700, mb: 2 }}>
+									Meta Tags
+								</Typography>
+
+								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+									{[
+										{ label: 'Title', value: meta.title },
+										{ label: 'Description', value: meta.description },
+										{ label: 'Canonical', value: meta.canonical },
+										{ label: 'Favicon', value: meta.favicon },
+									].map(({ label, value }) => (
+										<Box key={label}>
+											<Divider sx={{ mb: 1.5 }} />
+											<Typography
+												variant='caption'
+												color='text.secondary'
+												sx={{
+													textTransform: 'uppercase',
+													letterSpacing: '0.06em',
+												}}>
+												{label}
+											</Typography>
+											<Typography
+												variant='body2'
+												sx={{
+													fontFamily: '"JetBrains Mono", monospace',
+													fontSize: '0.78rem',
+													wordBreak: 'break-all',
+													mt: 0.25,
+													color: value ? 'text.primary' : 'text.disabled',
+												}}>
+												{value || '—'}
+											</Typography>
+										</Box>
+									))}
+
+									{/* OG tags */}
+									<Box>
+										<Divider sx={{ mb: 1.5 }} />
+										<Typography
+											variant='caption'
+											color='primary.main'
+											sx={{
+												textTransform: 'uppercase',
+												letterSpacing: '0.06em',
+												fontWeight: 600,
+											}}>
+											Open Graph
+										</Typography>
+										<Box
+											sx={{
+												display: 'flex',
+												flexDirection: 'column',
+												gap: 1,
+												mt: 0.5,
+											}}>
+											{[
+												{ label: 'og:title', value: meta.og.title },
+												{ label: 'og:description', value: meta.og.description },
+												{ label: 'og:image', value: meta.og.image },
+											].map(({ label, value }) => (
+												<Box key={label}>
+													<Typography variant='caption' color='text.secondary'>
+														{label}
+													</Typography>
+													<Typography
+														variant='body2'
+														sx={{
+															fontFamily: '"JetBrains Mono", monospace',
+															fontSize: '0.75rem',
+															wordBreak: 'break-all',
+															color: value ? 'text.primary' : 'text.disabled',
+														}}>
+														{value || '—'}
+													</Typography>
+												</Box>
+											))}
+										</Box>
+									</Box>
+
+									{/* Twitter tags */}
+									<Box>
+										<Divider sx={{ mb: 1.5 }} />
+										<Typography
+											variant='caption'
+											color='primary.main'
+											sx={{
+												textTransform: 'uppercase',
+												letterSpacing: '0.06em',
+												fontWeight: 600,
+											}}>
+											Twitter / X
+										</Typography>
+										<Box
+											sx={{
+												display: 'flex',
+												flexDirection: 'column',
+												gap: 1,
+												mt: 0.5,
+											}}>
+											{[
+												{ label: 'twitter:title', value: meta.twitter.title },
+												{
+													label: 'twitter:description',
+													value: meta.twitter.description,
+												},
+												{ label: 'twitter:image', value: meta.twitter.image },
+											].map(({ label, value }) => (
+												<Box key={label}>
+													<Typography variant='caption' color='text.secondary'>
+														{label}
+													</Typography>
+													<Typography
+														variant='body2'
+														sx={{
+															fontFamily: '"JetBrains Mono", monospace',
+															fontSize: '0.75rem',
+															wordBreak: 'break-all',
+															color: value ? 'text.primary' : 'text.disabled',
+														}}>
+														{value || '—'}
+													</Typography>
+												</Box>
+											))}
+										</Box>
+									</Box>
+								</Box>
+							</Paper>
+						</Grid>
+
+						{/* ── Right: Platform Previews — 50% ── */}
+						<Grid size={{ xs: 12, md: 6 }}>
+							<Paper sx={{ p: 2.5 }} variant='outlined'>
+								<Typography variant='h6' sx={{ fontWeight: 700, mb: 1 }}>
+									Platform Previews
+								</Typography>
+								<Typography
+									variant='body2'
+									color='text.secondary'
+									sx={{ mb: 3 }}>
+									How this URL will appear when shared on each platform.
+								</Typography>
+
+								{/* Previews stacked vertically — full width in their column */}
+								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+									<FacebookPreview
+										title={meta.og.title || meta.title}
+										description={meta.og.description || meta.description}
+										image={meta.og.image}
+										url={result.data.url}
+									/>
+									<TwitterPreview
+										title={meta.twitter.title || meta.og.title || meta.title}
+										description={
+											meta.twitter.description ||
+											meta.og.description ||
+											meta.description
+										}
+										image={meta.twitter.image || meta.og.image}
+										url={result.data.url}
+									/>
+									<LinkedInPreview
+										title={meta.og.title || meta.title}
+										description={meta.og.description || meta.description}
+										image={meta.og.image}
+										url={result.data.url}
+									/>
+									<SlackPreview
+										title={meta.og.title || meta.title}
+										description={meta.og.description || meta.description}
+										image={meta.og.image}
+										url={result.data.url}
+									/>
+								</Box>
+							</Paper>
+
+							{/* Rate limit info */}
+							<Typography
+								variant='caption'
+								color='text.secondary'
+								sx={{ mt: 2, display: 'block' }}>
+								{result.remaining} of {result.limit} daily audits remaining
+							</Typography>
+						</Grid>
+					</Grid>
+				</Container>
+			)}
+
+			{/* ── Footer ── */}
+			<Box
+				component='footer'
+				sx={{
+					mt: 'auto',
+					py: 3,
+					borderTop: '1px solid',
+					borderColor: 'divider',
+					textAlign: 'center',
+				}}>
+				<Typography variant='caption' color='text.secondary'>
+					MetaKit — Built by{' '}
+					<Link
+						href='https://linkedin.com/in/alifaizan786'
+						target='_blank'
+						color='primary.main'>
+						Faizan Ali
+					</Link>
+					{' · '}
+					<Link href='/docs' color='text.secondary'>
+						API Docs
+					</Link>
+					{' · '}
+					<Link
+						href='https://github.com/alifaizan786-op/MetaKit'
+						target='_blank'
+						color='text.secondary'>
+						GitHub
+					</Link>
+				</Typography>
+			</Box>
+		</Box>
+	);
 }
