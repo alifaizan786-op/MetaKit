@@ -1,6 +1,6 @@
 // lib/metaParser.ts
-import * as cheerio from 'cheerio';
 import { AuditResult, Warning } from '@/types/audit';
+import * as cheerio from 'cheerio';
 
 export async function parseMetaTags(url: string | null): Promise<AuditResult> {
 	if (!url) throw new Error('URL is required');
@@ -21,8 +21,9 @@ export async function parseMetaTags(url: string | null): Promise<AuditResult> {
 			status: fetchUrl.status,
 			statusText: fetchUrl.statusText,
 		},
-		auditedAt: new Date(),
+		auditedAt:  new Date().toISOString(),
 		cached: false,
+		warnings: [],  
 		meta: {
 			title: $('head > title').text(),
 			description: $('meta[name="description"]').attr('content'),
