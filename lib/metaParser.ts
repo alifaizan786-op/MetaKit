@@ -228,7 +228,7 @@ function generateWarnings(metaObj: AuditResult): Warning[] {
 			},
 		},
 	];
-	let warnings = [];
+	const warnings = [];
 
 	for (let i = 0; i < parameters.length; i++) {
 		const element = parameters[i];

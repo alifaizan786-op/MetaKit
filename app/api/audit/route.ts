@@ -1,8 +1,8 @@
 // app/api/audit/route.ts
 import { parseMetaTags } from '@/lib/metaParser';
-import { redis, ratelimit, CACHE_TTL, CACHE_PREFIX } from '@/lib/redis';
-import Audit from '@/models/Audit';
 import connectDB from '@/lib/mongodb';
+import { CACHE_PREFIX, CACHE_TTL, ratelimit, redis } from '@/lib/redis';
+import Audit from '@/models/Audit';
 
 export async function GET(req: Request) {
 	// Check if user has hit the limit of requests, before continuing
@@ -53,7 +53,7 @@ export async function GET(req: Request) {
 		result.cached = true;
 
 		//Cache result to redis
-		const cacheResult = await redis.set(`${CACHE_PREFIX}${url}`, result, {
+		await redis.set(`${CACHE_PREFIX}${url}`, result, {
 			ex: CACHE_TTL,
 		});
 

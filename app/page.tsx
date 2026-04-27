@@ -90,6 +90,7 @@ export default function Home() {
 			}
 		} catch (e) {
 			setError('Network error — could not reach the audit API');
+			console.error(e)
 		} finally {
 			setLoading(false);
 		}

@@ -27,25 +27,22 @@ export default function ThemeRegistry({
 }: {
 	children: React.ReactNode;
 }) {
-	// Default to dark — we'll update from system preference after mount
-	const [mode, setMode] = useState<'light' | 'dark'>('dark');
+	// Initialize from system preference immediately — avoids calling setState inside effect
+	const [mode, setMode] = useState<'light' | 'dark'>(() => {
+		if (typeof window === 'undefined') return 'dark';
+		return window.matchMedia('(prefers-color-scheme: dark)').matches
+			? 'dark'
+			: 'light';
+	});
 
-	// On first render, read the system preference
-	// We do this in useEffect (not useState initializer) to avoid SSR mismatch
 	useEffect(() => {
-		const prefersDark = window.matchMedia(
-			'(prefers-color-scheme: dark)',
-		).matches;
-		setMode(prefersDark ? 'dark' : 'light');
-
-		// Also listen for system preference changes
+		// Only listen for changes — initial value already set in useState
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 		const handler = (e: MediaQueryListEvent) =>
 			setMode(e.matches ? 'dark' : 'light');
 		mediaQuery.addEventListener('change', handler);
 		return () => mediaQuery.removeEventListener('change', handler);
 	}, []);
-
 	// Toggle handler — flips between light and dark
 	const toggleColorMode = () => {
 		setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
