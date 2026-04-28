@@ -4,29 +4,29 @@
 // Fetches from /api/history?id=[id] — returns the exact MongoDB document.
 // Reuses the same preview and warning components as the main page.
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  Divider,
-  Chip,
-  CircularProgress,
-  Alert,
-  AppBar,
-  Toolbar,
-  Link,
-Grid,
-} from '@mui/material';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import ThemeToggle from '@/components/ThemeToggle';
 import FacebookPreview from '@/components/previews/FacebookPreview';
-import TwitterPreview from '@/components/previews/TwitterPreview';
 import LinkedInPreview from '@/components/previews/LinkedInPreview';
 import SlackPreview from '@/components/previews/SlackPreview';
+import TwitterPreview from '@/components/previews/TwitterPreview';
+import ThemeToggle from '@/components/ThemeToggle';
 import WarningsList from '@/components/WarningsList';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import {
+    Alert,
+    AppBar,
+    Box,
+    Chip,
+    CircularProgress,
+    Container,
+    Divider,
+    Grid,
+    Link,
+    Paper,
+    Toolbar,
+    Typography,
+} from '@mui/material';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 // Shape of the audit document returned from /api/history
 interface AuditDetail {
