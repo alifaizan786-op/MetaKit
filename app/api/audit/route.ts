@@ -57,7 +57,11 @@ export async function GET(req: Request) {
 			ex: CACHE_TTL,
 		});
 
-		await Audit.create(result);
+		const saved = await Audit.create(result);
+
+		result.id = saved._id.toString()
+
+		
 
 		return Response.json(
 			{

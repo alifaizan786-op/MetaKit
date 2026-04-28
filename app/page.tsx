@@ -10,6 +10,7 @@ import SlackPreview from '@/components/previews/SlackPreview';
 import TwitterPreview from '@/components/previews/TwitterPreview';
 import ThemeToggle from '@/components/ThemeToggle';
 import WarningsList from '@/components/WarningsList';
+import { saveAudit } from '@/lib/indexedDB';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
@@ -38,6 +39,7 @@ import { useState } from 'react';
 // Shape of the API response
 interface AuditResponse {
 	data: {
+		id: string;
 		url: string;
 		pageStatus: { status: number; statusText: string };
 		auditedAt: string;
@@ -87,10 +89,16 @@ export default function Home() {
 				setError(json.error || 'Something went wrong');
 			} else {
 				setResult(json);
+				// save to IndexedDB so it shows up in history
+				await saveAudit({
+					url: url.trim(),
+					id: json.data.id,
+					auditedAt: json.data.auditedAt,
+				});
 			}
 		} catch (e) {
 			setError('Network error — could not reach the audit API');
-			console.error(e)
+			console.error(e);
 		} finally {
 			setLoading(false);
 		}
@@ -359,7 +367,6 @@ export default function Home() {
 					</Box>
 
 					<Grid container spacing={3}>
-						
 						{/* ── Warnings — full width ── */}
 						<Grid size={{ xs: 12 }}>
 							<Paper sx={{ p: 2.5 }} variant='outlined'>
