@@ -121,12 +121,7 @@ export default function AuditDetailPage() {
 					<Grid container spacing={3}>
 						{/* ── Warnings — full width ── */}
 						<Grid size={{ xs: 12 }}>
-							<Paper sx={{ p: 2.5 }} variant='outlined'>
-								<Typography variant='h6' sx={{ fontWeight: 700, mb: 1 }}>
-									Issues
-								</Typography>
-								<WarningsList warnings={audit.warnings} />
-							</Paper>
+							<WarningsList warnings={audit.warnings} />
 						</Grid>
 
 						{/* ── Left: Meta Tags ── */}
