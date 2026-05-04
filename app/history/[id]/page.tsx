@@ -5,23 +5,18 @@
 // Reuses the same preview and warning components as the main page.
 
 import Error from '@/components/Error';
-import FacebookPreview from '@/components/previews/FacebookPreview';
-import LinkedInPreview from '@/components/previews/LinkedInPreview';
-import SlackPreview from '@/components/previews/SlackPreview';
-import TwitterPreview from '@/components/previews/TwitterPreview';
+import MetaTags from '@/components/MetaTags';
+import PreviewsWrapper from '@/components/PreviewsWrapper';
 import Status from '@/components/status';
 import WarningsList from '@/components/WarningsList';
-import MetaTags from '@/components/MetaTags';
 
 import {
 	Box,
 	CircularProgress,
 	Container,
-	Divider,
 	Grid,
 	Link,
-	Paper,
-	Typography,
+	Typography
 } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -128,53 +123,12 @@ export default function AuditDetailPage() {
 						{/* ── Left: Meta Tags ── */}
 						<Grid size={{ xs: 12, md: 6 }}>
 							<MetaTags metaTagObj={meta} />
-					
 						</Grid>
 
 						{/* ── Right: Platform Previews ── */}
 						<Grid size={{ xs: 12, md: 6 }}>
-							<Paper sx={{ p: 2.5 }} variant='outlined'>
-								<Typography variant='h6' sx={{ fontWeight: 700, mb: 1 }}>
-									Platform Previews
-								</Typography>
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									sx={{ mb: 3 }}>
-									How this URL appears when shared on each platform.
-								</Typography>
-
-								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-									<FacebookPreview
-										title={meta.og.title || meta.title}
-										description={meta.og.description || meta.description}
-										image={meta.og.image}
-										url={audit.url}
-									/>
-									<TwitterPreview
-										title={meta.twitter.title || meta.og.title || meta.title}
-										description={
-											meta.twitter.description ||
-											meta.og.description ||
-											meta.description
-										}
-										image={meta.twitter.image || meta.og.image}
-										url={audit.url}
-									/>
-									<LinkedInPreview
-										title={meta.og.title || meta.title}
-										description={meta.og.description || meta.description}
-										image={meta.og.image}
-										url={audit.url}
-									/>
-									<SlackPreview
-										title={meta.og.title || meta.title}
-										description={meta.og.description || meta.description}
-										image={meta.og.image}
-										url={audit.url}
-									/>
-								</Box>
-							</Paper>
+							<PreviewsWrapper metaTagObj={meta} url={audit.url} />
+						
 						</Grid>
 					</Grid>
 				</Container>

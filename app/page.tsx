@@ -6,10 +6,7 @@
 
 import Error from '@/components/Error';
 import MetaTags from '@/components/MetaTags';
-import FacebookPreview from '@/components/previews/FacebookPreview';
-import LinkedInPreview from '@/components/previews/LinkedInPreview';
-import SlackPreview from '@/components/previews/SlackPreview';
-import TwitterPreview from '@/components/previews/TwitterPreview';
+import PreviewsWrapper from '@/components/PreviewsWrapper';
 import Status from '@/components/status';
 import WarningsList from '@/components/WarningsList';
 import { saveAudit } from '@/lib/indexedDB';
@@ -25,10 +22,9 @@ import {
 	Container,
 	Grid,
 	Link,
-	Paper,
 	TextField,
 	Tooltip,
-	Typography,
+	Typography
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -295,49 +291,7 @@ export default function Home() {
 
 						{/* ── Right: Platform Previews — 50% ── */}
 						<Grid size={{ xs: 12, md: 6 }}>
-							<Paper sx={{ p: 2.5 }} variant='outlined'>
-								<Typography variant='h6' sx={{ fontWeight: 700, mb: 1 }}>
-									Platform Previews
-								</Typography>
-								<Typography
-									variant='body2'
-									color='text.secondary'
-									sx={{ mb: 3 }}>
-									How this URL will appear when shared on each platform.
-								</Typography>
-
-								{/* Previews stacked vertically — full width in their column */}
-								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-									<FacebookPreview
-										title={meta.og.title || meta.title}
-										description={meta.og.description || meta.description}
-										image={meta.og.image}
-										url={result.data.url}
-									/>
-									<TwitterPreview
-										title={meta.twitter.title || meta.og.title || meta.title}
-										description={
-											meta.twitter.description ||
-											meta.og.description ||
-											meta.description
-										}
-										image={meta.twitter.image || meta.og.image}
-										url={result.data.url}
-									/>
-									<LinkedInPreview
-										title={meta.og.title || meta.title}
-										description={meta.og.description || meta.description}
-										image={meta.og.image}
-										url={result.data.url}
-									/>
-									<SlackPreview
-										title={meta.og.title || meta.title}
-										description={meta.og.description || meta.description}
-										image={meta.og.image}
-										url={result.data.url}
-									/>
-								</Box>
-							</Paper>
+							<PreviewsWrapper metaTagObj={meta} url={result.data.url} />
 
 							{/* Rate limit info */}
 							<Typography
