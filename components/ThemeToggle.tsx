@@ -14,11 +14,25 @@ export default function ThemeToggle() {
 	return (
 		<Tooltip
 			title={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>
-			<IconButton onClick={toggleColorMode} size='small' color='inherit'>
+			<IconButton
+				onClick={toggleColorMode}
+				size='small'
+				color='inherit'
+				sx={{
+					border: '1px solid',
+					borderColor: 'divider',
+					borderRadius: 1,
+				}}>
 				{mode === 'dark' ? (
-					<LightModeRoundedIcon fontSize='small' />
+					<LightModeRoundedIcon
+						fontSize='small'
+						sx={{ color: 'text.primary' }}
+					/>
 				) : (
-					<DarkModeRoundedIcon fontSize='small' />
+					<DarkModeRoundedIcon
+						fontSize='small'
+						sx={{ color: 'text.primary' }}
+					/>
 				)}
 			</IconButton>
 		</Tooltip>
