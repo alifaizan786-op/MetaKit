@@ -2,6 +2,7 @@
 // Root layout — wraps every page with the ThemeRegistry (MUI + color mode)
 // Also loads Google Fonts for Space Grotesk, DM Sans, and JetBrains Mono
 
+import NavBar from '@/components/NavBar';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
@@ -37,7 +38,10 @@ export default async function RootLayout({
 			</head>
 			<body>
 				{/* ThemeRegistry provides MUI ThemeProvider + system color mode detection */}
-				<ThemeRegistry initialMode={initialMode}>{children}</ThemeRegistry>
+				<ThemeRegistry initialMode={initialMode}>
+					<NavBar />
+					{children}
+				</ThemeRegistry>
 			</body>
 		</html>
 	);

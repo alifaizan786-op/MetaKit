@@ -4,13 +4,10 @@
 // This is a server component — it fetches data at request time, no useEffect needed.
 // Server components can directly call the DB without going through the API route.
 
-import ThemeToggle from '@/components/ThemeToggle';
 import { getAudits } from '@/lib/indexedDB';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useEffect, useState } from 'react';
 
 import {
-	AppBar,
 	Box,
 	Chip,
 	Container,
@@ -21,8 +18,7 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
-	Toolbar,
-	Typography,
+	Typography
 } from '@mui/material';
 
 interface AuditHistoryResponse {
@@ -82,48 +78,7 @@ export default function HistoryPage() {
 
 	return (
 		<Box sx={{ minHeight: '100vh' }}>
-			{/* Nav */}
-			<AppBar
-				position='sticky'
-				elevation={0}
-				sx={{
-					borderBottom: '1px solid',
-					borderColor: 'divider',
-					backgroundColor: 'background.paper',
-				}}>
-				<Toolbar>
-					<Link
-						href='/'
-						color='text.secondary'
-						sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: 2 }}>
-						<ArrowBackRoundedIcon fontSize='small' />
-					</Link>
-					<Typography
-						variant='h6'
-						sx={{
-							fontFamily: '"Space Grotesk", sans-serif',
-							fontWeight: 700,
-							color: 'primary.main',
-							flex: 1,
-						}}>
-						Meta
-						<Box component='span' sx={{ color: 'text.primary' }}>
-							Kit
-						</Box>
-						<Box
-							component='span'
-							sx={{
-								color: 'text.secondary',
-								fontWeight: 400,
-								fontSize: '0.9rem',
-								ml: 1,
-							}}>
-							/ History
-						</Box>
-					</Typography>
-					<ThemeToggle />
-				</Toolbar>
-			</AppBar>
+		
 
 			<Container maxWidth='xl' sx={{ py: 5 }}>
 				<Typography variant='h3' sx={{ mb: 1 }}>

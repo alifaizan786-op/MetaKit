@@ -4,22 +4,19 @@
 // User pastes a URL → hits Audit → sees meta tag results + social card previews side by side.
 // State machine: idle → loading → results | error
 
+
 import FacebookPreview from '@/components/previews/FacebookPreview';
 import LinkedInPreview from '@/components/previews/LinkedInPreview';
 import SlackPreview from '@/components/previews/SlackPreview';
 import TwitterPreview from '@/components/previews/TwitterPreview';
-import ThemeToggle from '@/components/ThemeToggle';
 import WarningsList from '@/components/WarningsList';
 import { saveAudit } from '@/lib/indexedDB';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
-import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
 	Alert,
-	AppBar,
 	Box,
 	Button,
 	Chip,
@@ -30,9 +27,8 @@ import {
 	Link,
 	Paper,
 	TextField,
-	Toolbar,
 	Tooltip,
-	Typography,
+	Typography
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -116,64 +112,7 @@ export default function Home() {
 
 	return (
 		<Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-			{/* ── Navigation bar ── */}
-			<AppBar
-				position='sticky'
-				elevation={0}
-				sx={{
-					borderBottom: '1px solid',
-					borderColor: 'divider',
-					backgroundColor: 'background.paper',
-				}}>
-				<Toolbar sx={{ gap: 2 }}>
-					{/* Logo */}
-					<Typography
-						variant='h6'
-						sx={{
-							fontFamily: '"Space Grotesk", sans-serif',
-							fontWeight: 700,
-							color: 'primary.main',
-							letterSpacing: '-0.02em',
-							flex: 1,
-						}}>
-						Meta
-						<Box component='span' sx={{ color: 'text.primary' }}>
-							Kit
-						</Box>
-					</Typography>
-
-					{/* Nav links — Box flex avoids passing layout props to DOM anchor tags */}
-					<Link
-						href='/history'
-						underline='none'
-						color='text.secondary'
-						sx={{
-							fontSize: '0.9rem',
-							display: 'flex',
-							alignItems: 'center',
-							gap: 0.5,
-						}}>
-						<HistoryRoundedIcon fontSize='small' />
-						History
-					</Link>
-
-					<Link
-						href='/docs'
-						underline='none'
-						color='text.secondary'
-						sx={{
-							fontSize: '0.9rem',
-							display: 'flex',
-							alignItems: 'center',
-							gap: 0.5,
-						}}>
-						<MenuBookRoundedIcon fontSize='small' />
-						API Docs
-					</Link>
-
-					<ThemeToggle />
-				</Toolbar>
-			</AppBar>
+		
 
 			{/* ── Hero / input section ── */}
 			<Box
