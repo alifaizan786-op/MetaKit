@@ -9,11 +9,11 @@ import FacebookPreview from '@/components/previews/FacebookPreview';
 import LinkedInPreview from '@/components/previews/LinkedInPreview';
 import SlackPreview from '@/components/previews/SlackPreview';
 import TwitterPreview from '@/components/previews/TwitterPreview';
+import Status from '@/components/status';
 import WarningsList from '@/components/WarningsList';
 
 import {
 	Box,
-	Chip,
 	CircularProgress,
 	Container,
 	Divider,
@@ -109,28 +109,13 @@ export default function AuditDetailPage() {
 							}}>
 							{audit.url}
 						</Typography>
-						<Box
-							sx={{
-								display: 'flex',
-								alignItems: 'center',
-								gap: 1,
-								flexWrap: 'wrap',
-							}}>
-							<Chip
-								label={`${audit.pageStatus.status} ${audit.pageStatus.statusText}`}
-								color={audit.pageStatus.status === 200 ? 'success' : 'error'}
-								size='small'
-							/>
-							<Chip
-								label={audit.cached ? 'Cached' : 'Live'}
-								variant='outlined'
-								size='small'
-								color={audit.cached ? 'info' : 'default'}
-							/>
-							<Typography variant='caption' color='text.secondary'>
-								Audited {new Date(audit.auditedAt).toLocaleString()}
-							</Typography>
-						</Box>
+						<Status
+							statusObj={{
+								pageStatus: audit.pageStatus,
+								cached: audit.cached,
+								auditedAt: audit.auditedAt,
+							}}
+						/>
 					</Box>
 
 					<Grid container spacing={3}>

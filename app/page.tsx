@@ -9,6 +9,7 @@ import FacebookPreview from '@/components/previews/FacebookPreview';
 import LinkedInPreview from '@/components/previews/LinkedInPreview';
 import SlackPreview from '@/components/previews/SlackPreview';
 import TwitterPreview from '@/components/previews/TwitterPreview';
+import Status from '@/components/status';
 import WarningsList from '@/components/WarningsList';
 import { saveAudit } from '@/lib/indexedDB';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
@@ -251,30 +252,13 @@ export default function Home() {
 							gap: 1,
 						}}>
 						{/* Left: status chips + timestamp */}
-						<Box
-							sx={{
-								display: 'flex',
-								alignItems: 'center',
-								gap: 1,
-								flexWrap: 'wrap',
-							}}>
-							<Chip
-								label={`${result.data.pageStatus.status} ${result.data.pageStatus.statusText}`}
-								color={
-									result.data.pageStatus.status === 200 ? 'success' : 'error'
-								}
-								size='small'
-							/>
-							<Chip
-								label={result.data.cached ? 'Cached' : 'Live'}
-								variant='outlined'
-								size='small'
-								color={result.data.cached ? 'info' : 'default'}
-							/>
-							<Typography variant='caption' color='text.secondary'>
-								Audited {new Date(result.data.auditedAt).toLocaleTimeString()}
-							</Typography>
-						</Box>
+						<Status
+							statusObj={{
+								pageStatus: result.data.pageStatus,
+								cached: result.data.cached,
+								auditedAt: result.data.auditedAt,
+							}}
+						/>
 
 						{/* Right: action buttons */}
 						<Box sx={{ display: 'flex', gap: 1 }}>
