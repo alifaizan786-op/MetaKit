@@ -6,7 +6,23 @@ import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import type { Metadata } from 'next';
+import { DM_Sans, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { cookies } from 'next/headers';
+
+const spaceGrotesk = Space_Grotesk({
+	subsets: ['latin'],
+	variable: '--font-space-grotesk',
+});
+
+const dmSans = DM_Sans({
+	subsets: ['latin'],
+	variable: '--font-dm-sans',
+});
+
+const jetBrainsMono = JetBrains_Mono({
+	subsets: ['latin'],
+	variable: '--font-jetbrains-mono',
+});
 
 export const metadata: Metadata = {
 	title: 'MetaKit — Website Meta & SEO Toolbox',
@@ -22,23 +38,12 @@ export default async function RootLayout({
 	const cookieStore = await cookies();
 	const themeCookie = cookieStore.get('metakit-theme');
 	const initialMode = themeCookie?.value === 'dark' ? 'dark' : 'light';
+
 	return (
 		<html lang='en'>
-			<head>
-				{/* Google Fonts — preconnect first for performance */}
-				<link rel='preconnect' href='https://fonts.googleapis.com' />
-				<link
-					rel='preconnect'
-					href='https://fonts.gstatic.com'
-					crossOrigin='anonymous'
-				/>
-				<link
-					href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap'
-					rel='stylesheet'
-				/>
-			</head>
-			<body>
-				{/* ThemeRegistry provides MUI ThemeProvider + system color mode detection */}
+			<body
+				className={`${spaceGrotesk.variable} ${dmSans.variable} ${jetBrainsMono.variable}`}
+			>
 				<ThemeRegistry initialMode={initialMode}>
 					<NavBar />
 					{children}

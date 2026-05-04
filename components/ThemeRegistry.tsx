@@ -6,7 +6,14 @@
 
 import { darkTheme, lightTheme } from '@/lib/theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 // Context so any component can call useColorMode() to toggle the theme
 interface ColorModeContextType {
 	mode: 'light' | 'dark';
@@ -43,14 +50,19 @@ export default function ThemeRegistry({
 	}, []);
 
 	// Toggle handler — flips between light and dark
-	const toggleColorMode = () => {
-		const newMode = mode === 'light' ? 'dark' : 'light';
-		setMode(newMode);
-		document.cookie = `metakit-theme=${newMode};path=/;max-age=31536000`; // 1 year
-	};
+	const toggleColorMode = useCallback(() => {
+		setMode((prevMode) => {
+			const newMode = prevMode === 'light' ? 'dark' : 'light';
+			document.cookie = `metakit-theme=${newMode};path=/;max-age=31536000`;
+			return newMode;
+		});
+	}, []);
 
 	// Memoize the context value so it doesn't trigger re-renders on unrelated state changes
-	const colorModeContext = useMemo(() => ({ mode, toggleColorMode }), [mode]);
+	const colorModeContext = useMemo(
+		() => ({ mode, toggleColorMode }),
+		[mode, toggleColorMode],
+	);
 
 	// Pick the theme based on current mode
 	const theme = mode === 'dark' ? darkTheme : lightTheme;

@@ -9,7 +9,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
-import { Box, Chip, Typography, Grid, Paper } from '@mui/material';
+import { Box, Chip, Paper, Typography } from '@mui/material';
 
 interface WarningsListProps {
 	warnings: Warning[];
