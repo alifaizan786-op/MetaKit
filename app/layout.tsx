@@ -4,6 +4,7 @@
 
 import ThemeRegistry from '@/components/ThemeRegistry';
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
 	title: 'MetaKit — Website Meta & SEO Toolbox',
@@ -11,11 +12,14 @@ export const metadata: Metadata = {
 		'Audit Open Graph, Twitter Card, and standard meta tags for any URL. Free developer tool with a public REST API.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const cookieStore = await cookies();
+	const themeCookie = cookieStore.get('metakit-theme');
+	const initialMode = themeCookie?.value === 'dark' ? 'dark' : 'light';
 	return (
 		<html lang='en'>
 			<head>
@@ -33,7 +37,7 @@ export default function RootLayout({
 			</head>
 			<body>
 				{/* ThemeRegistry provides MUI ThemeProvider + system color mode detection */}
-				<ThemeRegistry>{children}</ThemeRegistry>
+				<ThemeRegistry initialMode={initialMode}>{children}</ThemeRegistry>
 			</body>
 		</html>
 	);

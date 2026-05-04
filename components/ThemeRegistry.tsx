@@ -24,28 +24,30 @@ export const useColorMode = () => useContext(ColorModeContext);
 
 export default function ThemeRegistry({
 	children,
+	initialMode = 'light', // default to light on first visit
 }: {
 	children: React.ReactNode;
+	initialMode?: 'light' | 'dark';
 }) {
-	// Initialize from system preference immediately — avoids calling setState inside effect
-	const [mode, setMode] = useState<'light' | 'dark'>(() => {
-		if (typeof window === 'undefined') return 'dark';
-		return window.matchMedia('(prefers-color-scheme: dark)').matches
-			? 'dark'
-			: 'light';
-	});
+	const [mode, setMode] = useState<'light' | 'dark'>(initialMode);
 
 	useEffect(() => {
 		// Only listen for changes — initial value already set in useState
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-		const handler = (e: MediaQueryListEvent) =>
-			setMode(e.matches ? 'dark' : 'light');
+		const handler = (e: MediaQueryListEvent) => {
+			const newMode = e.matches ? 'dark' : 'light';
+			setMode(newMode);
+			document.cookie = `metakit-theme=${newMode};path=/;max-age=31536000`;
+		};
 		mediaQuery.addEventListener('change', handler);
 		return () => mediaQuery.removeEventListener('change', handler);
 	}, []);
+
 	// Toggle handler — flips between light and dark
 	const toggleColorMode = () => {
-		setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+		const newMode = mode === 'light' ? 'dark' : 'light';
+		setMode(newMode);
+		document.cookie = `metakit-theme=${newMode};path=/;max-age=31536000`; // 1 year
 	};
 
 	// Memoize the context value so it doesn't trigger re-renders on unrelated state changes
