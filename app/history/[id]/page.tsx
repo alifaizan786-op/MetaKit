@@ -11,6 +11,7 @@ import SlackPreview from '@/components/previews/SlackPreview';
 import TwitterPreview from '@/components/previews/TwitterPreview';
 import Status from '@/components/status';
 import WarningsList from '@/components/WarningsList';
+import MetaTags from '@/components/MetaTags';
 
 import {
 	Box,
@@ -126,135 +127,8 @@ export default function AuditDetailPage() {
 
 						{/* ── Left: Meta Tags ── */}
 						<Grid size={{ xs: 12, md: 6 }}>
-							<Paper sx={{ p: 2.5 }} variant='outlined'>
-								<Typography variant='h6' sx={{ fontWeight: 700, mb: 2 }}>
-									Meta Tags
-								</Typography>
-
-								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-									{[
-										{ label: 'Title', value: meta.title },
-										{ label: 'Description', value: meta.description },
-										{ label: 'Canonical', value: meta.canonical },
-										{ label: 'Favicon', value: meta.favicon },
-									].map(({ label, value }) => (
-										<Box key={label}>
-											<Divider sx={{ mb: 1.5 }} />
-											<Typography
-												variant='caption'
-												color='text.secondary'
-												sx={{
-													textTransform: 'uppercase',
-													letterSpacing: '0.06em',
-												}}>
-												{label}
-											</Typography>
-											<Typography
-												variant='body2'
-												sx={{
-													fontFamily: '"JetBrains Mono", monospace',
-													fontSize: '0.78rem',
-													wordBreak: 'break-all',
-													mt: 0.25,
-													color: value ? 'text.primary' : 'text.disabled',
-												}}>
-												{value || '—'}
-											</Typography>
-										</Box>
-									))}
-
-									{/* OG tags */}
-									<Box>
-										<Divider sx={{ mb: 1.5 }} />
-										<Typography
-											variant='caption'
-											color='primary.main'
-											sx={{
-												textTransform: 'uppercase',
-												letterSpacing: '0.06em',
-												fontWeight: 600,
-											}}>
-											Open Graph
-										</Typography>
-										<Box
-											sx={{
-												display: 'flex',
-												flexDirection: 'column',
-												gap: 1,
-												mt: 0.5,
-											}}>
-											{[
-												{ label: 'og:title', value: meta.og.title },
-												{ label: 'og:description', value: meta.og.description },
-												{ label: 'og:image', value: meta.og.image },
-											].map(({ label, value }) => (
-												<Box key={label}>
-													<Typography variant='caption' color='text.secondary'>
-														{label}
-													</Typography>
-													<Typography
-														variant='body2'
-														sx={{
-															fontFamily: '"JetBrains Mono", monospace',
-															fontSize: '0.75rem',
-															wordBreak: 'break-all',
-															color: value ? 'text.primary' : 'text.disabled',
-														}}>
-														{value || '—'}
-													</Typography>
-												</Box>
-											))}
-										</Box>
-									</Box>
-
-									{/* Twitter tags */}
-									<Box>
-										<Divider sx={{ mb: 1.5 }} />
-										<Typography
-											variant='caption'
-											color='primary.main'
-											sx={{
-												textTransform: 'uppercase',
-												letterSpacing: '0.06em',
-												fontWeight: 600,
-											}}>
-											Twitter / X
-										</Typography>
-										<Box
-											sx={{
-												display: 'flex',
-												flexDirection: 'column',
-												gap: 1,
-												mt: 0.5,
-											}}>
-											{[
-												{ label: 'twitter:title', value: meta.twitter.title },
-												{
-													label: 'twitter:description',
-													value: meta.twitter.description,
-												},
-												{ label: 'twitter:image', value: meta.twitter.image },
-											].map(({ label, value }) => (
-												<Box key={label}>
-													<Typography variant='caption' color='text.secondary'>
-														{label}
-													</Typography>
-													<Typography
-														variant='body2'
-														sx={{
-															fontFamily: '"JetBrains Mono", monospace',
-															fontSize: '0.75rem',
-															wordBreak: 'break-all',
-															color: value ? 'text.primary' : 'text.disabled',
-														}}>
-														{value || '—'}
-													</Typography>
-												</Box>
-											))}
-										</Box>
-									</Box>
-								</Box>
-							</Paper>
+							<MetaTags metaTagObj={meta} />
+					
 						</Grid>
 
 						{/* ── Right: Platform Previews ── */}
