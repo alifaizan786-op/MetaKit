@@ -2,6 +2,7 @@
 // Root layout — wraps every page with the ThemeRegistry (MUI + color mode)
 // Also loads Google Fonts for Space Grotesk, DM Sans, and JetBrains Mono
 
+import Footer from '@/components/Footer';
 import NavBar from '@/components/NavBar';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import type { Metadata } from 'next';
@@ -41,6 +42,7 @@ export default async function RootLayout({
 				<ThemeRegistry initialMode={initialMode}>
 					<NavBar />
 					{children}
+					<Footer />
 				</ThemeRegistry>
 			</body>
 		</html>

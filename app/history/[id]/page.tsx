@@ -134,26 +134,7 @@ export default function AuditDetailPage() {
 				</Container>
 			)}
 
-			{/* ── Footer ── */}
-			<Box
-				component='footer'
-				sx={{
-					mt: 'auto',
-					py: 3,
-					borderTop: '1px solid',
-					borderColor: 'divider',
-					textAlign: 'center',
-				}}>
-				<Typography variant='caption' color='text.secondary'>
-					MetaKit — Built by{' '}
-					<Link
-						href='https://linkedin.com/in/alifaizan786'
-						target='_blank'
-						color='primary.main'>
-						Faizan Ali
-					</Link>
-				</Typography>
-			</Box>
+		
 		</Box>
 	);
 }
