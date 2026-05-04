@@ -86,48 +86,7 @@ export default function DocsPage() {
 
 	return (
 		<Box sx={{ minHeight: '100vh' }}>
-			{/* Nav */}
-			<AppBar
-				position='sticky'
-				elevation={0}
-				sx={{
-					borderBottom: '1px solid',
-					borderColor: 'divider',
-					backgroundColor: 'background.paper',
-				}}>
-				<Toolbar sx={{ gap: 2 }}>
-					<Link
-						href='/'
-						color='text.secondary'
-						sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: 2 }}>
-						<ArrowBackRoundedIcon fontSize='small' />
-					</Link>
-					<Typography
-						variant='h6'
-						sx={{
-							fontFamily: '"Space Grotesk", sans-serif',
-							fontWeight: 700,
-							color: 'primary.main',
-							flex: 1,
-						}}>
-						Meta
-						<Box component='span' sx={{ color: 'text.primary' }}>
-							Kit
-						</Box>
-						<Box
-							component='span'
-							sx={{
-								color: 'text.secondary',
-								fontWeight: 400,
-								fontSize: '0.9rem',
-								ml: 1,
-							}}>
-							/ API Docs
-						</Box>
-					</Typography>
-					<ThemeToggle />
-				</Toolbar>
-			</AppBar>
+			
 
 			<Container maxWidth='md' sx={{ py: 6 }}>
 				{/* Header */}
@@ -152,7 +111,7 @@ export default function DocsPage() {
 				<Typography variant='h4' sx={{ mb: 2 }}>
 					Base URL
 				</Typography>
-				<CodeBlock>{'https://metakit.dev/api'}</CodeBlock>
+				<CodeBlock>{'https://metakit-nu.vercel.app/'}</CodeBlock>
 
 				<Divider sx={{ my: 4 }} />
 
