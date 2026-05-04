@@ -7,7 +7,6 @@
 import { darkTheme, lightTheme } from '@/lib/theme';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-
 // Context so any component can call useColorMode() to toggle the theme
 interface ColorModeContextType {
 	mode: 'light' | 'dark';

@@ -4,7 +4,7 @@
 // User pastes a URL → hits Audit → sees meta tag results + social card previews side by side.
 // State machine: idle → loading → results | error
 
-
+import Error from '@/components/Error';
 import FacebookPreview from '@/components/previews/FacebookPreview';
 import LinkedInPreview from '@/components/previews/LinkedInPreview';
 import SlackPreview from '@/components/previews/SlackPreview';
@@ -16,7 +16,6 @@ import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
-	Alert,
 	Box,
 	Button,
 	Chip,
@@ -28,7 +27,7 @@ import {
 	Paper,
 	TextField,
 	Tooltip,
-	Typography
+	Typography,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -112,8 +111,6 @@ export default function Home() {
 
 	return (
 		<Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-		
-
 			{/* ── Hero / input section ── */}
 			<Box
 				sx={{
@@ -238,11 +235,7 @@ export default function Home() {
 			</Box>
 
 			{/* ── Error state ── */}
-			{error && (
-				<Container maxWidth='md' sx={{ mt: 3 }}>
-					<Alert severity='error'>{error}</Alert>
-				</Container>
-			)}
+			{error && <Error message={error} />}
 
 			{/* ── Results section ── */}
 			{result && meta && (

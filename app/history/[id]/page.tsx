@@ -4,22 +4,23 @@
 // Fetches from /api/history?id=[id] — returns the exact MongoDB document.
 // Reuses the same preview and warning components as the main page.
 
+import Error from '@/components/Error';
 import FacebookPreview from '@/components/previews/FacebookPreview';
 import LinkedInPreview from '@/components/previews/LinkedInPreview';
 import SlackPreview from '@/components/previews/SlackPreview';
 import TwitterPreview from '@/components/previews/TwitterPreview';
 import WarningsList from '@/components/WarningsList';
+
 import {
-  Alert,
-  Box,
-  Chip,
-  CircularProgress,
-  Container,
-  Divider,
-  Grid,
-  Link,
-  Paper,
-  Typography,
+	Box,
+	Chip,
+	CircularProgress,
+	Container,
+	Divider,
+	Grid,
+	Link,
+	Paper,
+	Typography,
 } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -91,11 +92,7 @@ export default function AuditDetailPage() {
 			)}
 
 			{/* ── Error state ── */}
-			{error && (
-				<Container maxWidth='md' sx={{ mt: 4 }}>
-					<Alert severity='error'>{error}</Alert>
-				</Container>
-			)}
+			{error && <Error message={error} />}
 
 			{/* ── Audit detail ── */}
 			{audit && meta && (

@@ -3,6 +3,7 @@ import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import { AppBar, Box, Link, Toolbar, Typography } from '@mui/material';
 
+
 export default function NavBar() {
 	return (
 		<AppBar

@@ -4,18 +4,14 @@
 // Shows the endpoint, parameters, example request, and live example response.
 // The "Try it" section calls the real API — the docs eat their own dog food.
 
-import ThemeToggle from '@/components/ThemeToggle';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
-	AppBar,
 	Box,
 	Button,
 	Chip,
 	CircularProgress,
 	Container,
 	Divider,
-	Link,
 	Paper,
 	Table,
 	TableBody,
@@ -23,7 +19,6 @@ import {
 	TableHead,
 	TableRow,
 	TextField,
-	Toolbar,
 	Typography
 } from '@mui/material';
 import { useState } from 'react';
